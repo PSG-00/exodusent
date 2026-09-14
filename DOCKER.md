@@ -18,7 +18,7 @@ docker compose up --build
 docker compose -f compose.db.yaml up -d
 ```
 
-IDE 실행 설정에 `SPRING_PROFILES_ACTIVE=postgres` 환경 변수를 지정한다. 기본 PostgreSQL 주소와 계정은 `localhost:5432`, `exodusent` / `exodusent_dev`다. `.env`에서 DB 계정이나 비밀번호를 바꿨다면 IDE 실행 설정의 `SPRING_DATASOURCE_USERNAME`과 `SPRING_DATASOURCE_PASSWORD`도 같은 값으로 맞춘다.
+애플리케이션은 PostgreSQL을 기본 데이터베이스로 사용하므로 별도 Spring 프로필 설정 없이 IDE에서 실행하면 된다. 기본 접속 주소와 계정은 `localhost:5432`, `exodusent` / `exodusent_dev`다. `.env`에서 DB 이름·계정·비밀번호를 바꿨다면 IDE 실행 설정에서 각각 `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD` 환경 변수도 맞춘다.
 
 DB 컨테이너를 종료할 때는 다음 명령을 사용한다.
 
@@ -26,4 +26,4 @@ DB 컨테이너를 종료할 때는 다음 명령을 사용한다.
 docker compose -f compose.db.yaml down
 ```
 
-기본 H2 설정은 그대로 두므로 `postgres` 프로필을 활성화하지 않은 테스트와 기존 실행은 H2를 사용한다. 기본 계정은 로컬 개발용이며 배포 환경에서는 반드시 별도의 비밀번호를 설정한다.
+테스트도 PostgreSQL을 사용한다. 로컬에서 Gradle 테스트를 실행하기 전에 이 Compose 파일로 DB를 시작한다. GitHub Actions 테스트에는 별도의 PostgreSQL 서비스가 설정되어 있다. 기본 계정은 로컬 개발용이며 배포 환경에서는 반드시 별도의 비밀번호를 설정한다.

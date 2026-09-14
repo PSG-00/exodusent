@@ -20,6 +20,20 @@ jobs:
   analyze:
     name: Build and analyze
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: exodusent
+          POSTGRES_USER: exodusent
+          POSTGRES_PASSWORD: exodusent_dev
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U exodusent -d exodusent"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Check out source
         uses: actions/checkout@v6
