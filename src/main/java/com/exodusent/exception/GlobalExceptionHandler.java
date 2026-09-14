@@ -2,9 +2,12 @@ package com.exodusent.exception;
 
 import com.exodusent.exception.errorcode.CommonErrorCode;
 import com.exodusent.exception.errorcode.ErrorCode;
+import com.exodusent.exception.errorcode.VoteErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -42,6 +45,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.of(CommonErrorCode.INVALID_INPUT_VALUE, ex.getMessage()));
+    }
+
+    // HTTP 요청 본문 누락 또는 역직렬화 실패(HttpMessageNotReadableException) 처리
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        log.warn("[HttpMessageNotReadableException] Code: {}, Message: {}", CommonErrorCode.INVALID_INPUT_VALUE.getCode(), ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(CommonErrorCode.INVALID_INPUT_VALUE, "요청 본문이 올바르지 않거나 누락되었습니다."));
+    }
+
+    // 동시성 요청 등으로 인한 데이터베이스 유니크 제약조건 위반(DataIntegrityViolationException) 처리
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        log.warn("[DataIntegrityViolationException] Code: {}, Message: {}", VoteErrorCode.ALREADY_VOTED.getCode(), ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(VoteErrorCode.ALREADY_VOTED));
     }
 
     // 처리되지 않은 시스템 내부 예외(Exception) 처리
