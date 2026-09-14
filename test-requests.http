@@ -1,0 +1,50 @@
+### 1. Health Check
+GET http://localhost:8080/health
+
+### 2. 투표하기 - 정상 요청 (짜장)
+POST http://localhost:8080/api/vote
+Content-Type: application/json
+
+{
+  "choice": "jajang",
+  "voterId": "user-123"
+}
+
+### 3. 투표하기 - 정상 요청 (짬뽕)
+POST http://localhost:8080/api/vote
+Content-Type: application/json
+
+{
+  "choice": "jjamppong",
+  "voterId": "user-456"
+}
+
+### 4. 투표하기 - 중복 voterId 테스트 (409 Conflict)
+POST http://localhost:8080/api/vote
+Content-Type: application/json
+
+{
+  "choice": "jajang",
+  "voterId": "user-123"
+}
+
+### 5. 투표하기 - 잘못된 choice 값 전달 테스트 (400 Bad Request)
+POST http://localhost:8080/api/vote
+Content-Type: application/json
+
+{
+  "choice": "tangsooyook",
+  "voterId": "user-789"
+}
+
+### 6. 투표하기 - voterId 누락 테스트 (400 Bad Request)
+POST http://localhost:8080/api/vote
+Content-Type: application/json
+
+{
+  "choice": "jajang",
+  "voterId": ""
+}
+
+### 7. 현재 투표 결과 조회
+GET http://localhost:8080/api/result
