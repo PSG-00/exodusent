@@ -1,5 +1,11 @@
 server:
   port: 8080
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 20
+    accept-count: 300
+    max-connections: 8192
 
 spring:
   application:
@@ -10,11 +16,15 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:exodusent}
     password: ${SPRING_DATASOURCE_PASSWORD:exodusent_dev}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 20
+      connection-timeout: 30000
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
